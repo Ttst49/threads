@@ -1,8 +1,8 @@
 use std::thread;
 use std::time::Duration;
 use std::sync::mpsc;
-use std::sync::Mutex;
-use std::rc::Rc;
+use std::sync::{Arc,Mutex};
+
 
 #[allow(unused)]
 fn two_task_at_once(){
@@ -82,11 +82,11 @@ fn mutex_introduction(){
 }
 
 fn counter_mutex(){
-    let counter = Rc::new(Mutex::new(0));
+    let counter = Arc::new(Mutex::new(0));
     let mut manipulators = vec![];
 
-    for _ in 1..10 {
-        let counter = Rc::clone(&counter);
+    for _ in 0..10 {
+        let counter = Arc::clone(&counter);
         let manipulator = thread::spawn(move || {
            let mut number = counter.lock().unwrap();
             *number += 1;
