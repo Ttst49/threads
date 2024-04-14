@@ -33,6 +33,22 @@ fn using_move_on_new_task(){
 fn channel_creation(){
     let (tx,rx) = mpsc::channel();
 
+    let tx1 = tx.clone();
+    thread::spawn(move || {
+       let values = vec![
+           String::from("It is"),
+           String::from("messages from"),
+           String::from("a new task"),
+           String::from("with same"),
+           String::from("receiver")
+       ];
+
+        for value in values {
+            tx1.send(value).unwrap();
+            thread::sleep(Duration::from_secs(1))
+        }
+    });
+
     thread::spawn(move || {
         let values = vec![
             String::from("Hey"),
