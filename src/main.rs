@@ -1,6 +1,8 @@
 use std::thread;
 use std::time::Duration;
 use std::sync::mpsc;
+use std::sync::Mutex;
+use std::rc::Rc;
 
 #[allow(unused)]
 fn two_task_at_once(){
@@ -68,8 +70,37 @@ fn channel_creation(){
     }
 }
 
+#[allow(unused)]
+fn mutex_introduction(){
+    let m = Mutex::new(5i64);
+    {
+        let mut number = m.lock().unwrap();
+        *number = 6;
+    }
+
+    println!("Number equal {:?}",m)
+}
+
+fn counter_mutex(){
+    let counter = Mutex::new(0);
+    let mut manipulators = vec![];
+
+    for _ in 1..10 {
+        let manipulator = thread::spawn(move || {
+           let mut number = counter.lock().unwrap();
+            *number += 1;
+        });
+        manipulators.push(manipulator)
+    }
+
+    for manipulator in manipulators {
+        manipulator.join().unwrap();
+    }
+
+    println!("Result : {}", *counter.lock().unwrap());
+}
 
 
 fn main() {
-    channel_creation();
+    counter_mutex();
 }
