@@ -82,10 +82,11 @@ fn mutex_introduction(){
 }
 
 fn counter_mutex(){
-    let counter = Mutex::new(0);
+    let counter = Rc::new(Mutex::new(0));
     let mut manipulators = vec![];
 
     for _ in 1..10 {
+        let counter = Rc::clone(&counter);
         let manipulator = thread::spawn(move || {
            let mut number = counter.lock().unwrap();
             *number += 1;
