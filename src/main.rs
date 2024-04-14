@@ -34,12 +34,22 @@ fn channel_creation(){
     let (tx,rx) = mpsc::channel();
 
     thread::spawn(move || {
-        let value = String::from("Hey");
-        tx.send(value).unwrap();
+        let values = vec![
+            String::from("Hey"),
+            String::from("I am"),
+            String::from("a message"),
+            String::from("to"),
+            String::from("you"),
+        ];
+        for value in values {
+            tx.send(value).unwrap();
+            thread::sleep(Duration::from_secs(1))
+        }
     });
 
-    let received = rx.recv().unwrap();
-    println!("We received {}",received)
+    for received in rx {
+        println!("We got : {}",received)
+    }
 }
 
 
